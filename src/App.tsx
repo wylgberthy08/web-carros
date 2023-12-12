@@ -8,13 +8,19 @@ import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Layout } from "./components/layout";
 
+import { Private } from "./routes/Private";
+
 const router = createBrowserRouter([
   {
     element: <Layout />,
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: (
+          <Private>
+            <Home />
+          </Private>
+        ),
       },
       {
         path: "/car/:id",
@@ -22,11 +28,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/dashboard",
-        element: <Dashboard />,
+        element: (
+          <Private>
+            <Dashboard />
+          </Private>
+        ),
       },
       {
         path: "/dashboard/new",
-        element: <New />,
+        element: (
+          <Private>
+            <New />
+          </Private>
+        ),
       },
     ],
   },

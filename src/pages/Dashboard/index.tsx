@@ -1,7 +1,11 @@
+import { PanelHeader } from "../../components/PanelHeader";
+import { Container } from "../../components/container";
+
 export function Dashboard() {
   return (
-    <div>
+    <Container>
+      <PanelHeader />
       <h1>Dashboard</h1>
-    </div>
+    </Container>
   );
 }
