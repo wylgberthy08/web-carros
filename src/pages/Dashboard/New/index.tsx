@@ -1,12 +1,12 @@
 import { PanelHeader } from "../../../components/PanelHeader";
 import { Container } from "../../../components/container";
 
-import { FiUpload } from "react-icons/fi";
+import { FiUpload, FiTrash } from "react-icons/fi";
 import { useForm } from "react-hook-form";
 import { Input } from "../../../components/input";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChangeEvent, useContext } from "react";
+import { ChangeEvent, useContext, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { v4 as uuidV4 } from "uuid";
 
@@ -34,6 +34,12 @@ const schema = z.object({
   description: z.string().nonempty("A descrição é obrigatoria "),
 });
 
+interface imageItemProps {
+  uid: string;
+  name: string;
+  previewUrl: string;
+  url: string;
+}
 type FormData = z.infer<typeof schema>;
 
 export function New() {
@@ -46,8 +52,9 @@ export function New() {
     resolver: zodResolver(schema),
     mode: "onChange",
   });
-
   const { user } = useContext(AuthContext);
+
+  const [carImages, setCarImages] = useState<imageItemProps[]>([]);
 
   async function handleFile(e: ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files[0]) {
@@ -72,9 +79,30 @@ export function New() {
     uploadBytes(uploadRef, image).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((downloadUrl) => {
         console.log(downloadUrl);
+        const imageItem = {
+          name: uidImage,
+          uid: currentUuid,
+          previewUrl: URL.createObjectURL(image),
+          url: downloadUrl,
+        };
+        setCarImages((images) => [...images, imageItem]);
       });
     });
   }
+
+  async function handleDeleteImage(item: imageItemProps) {
+    const imagePath = `images/${item.uid}/${item.name}`;
+
+    const imageRef = ref(storage, imagePath);
+    setCarImages(carImages.filter((car) => car.url !== item.url));
+
+    try {
+      await deleteObject(imageRef);
+    } catch (error) {
+      console.log("Error ao deletar");
+    }
+  }
+
   function onsubmit(data: FormData) {
     console.log(data);
   }
@@ -96,6 +124,20 @@ export function New() {
             />
           </div>
         </button>
+        {carImages.map((item) => (
+          <div className="w-full h-32 flex items-center justify-center relative">
+            <button
+              className="absolute"
+              onClick={() => handleDeleteImage(item)}
+            >
+              <FiTrash size={28} color="#fff" />
+            </button>
+            <img
+              src={item.previewUrl}
+              className="rounded-lg w-full h-32 object-cover"
+            />
+          </div>
+        ))}
       </div>
       <div className="w-full bg-white p-3 rounded-lg flex flex-col sm:flex-row items-center gap-2 mt-2">
         <form className="w-full" onSubmit={handleSubmit(onsubmit)}>
