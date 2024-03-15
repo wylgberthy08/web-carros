@@ -9,7 +9,7 @@ const firebaseConfig = {
   projectId: "webcarros-6291f",
   storageBucket: "webcarros-6291f.appspot.com",
   messagingSenderId: "179617540160",
-  appId: "1:179617540160:web:7ebff0f9a0c4c6c1f757a5",
+  appId: "1:179617540160:web:7ebff0f9a0c4c6c1f757a5"
 };
 
 const app = initializeApp(firebaseConfig);

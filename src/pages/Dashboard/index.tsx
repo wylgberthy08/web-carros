@@ -5,7 +5,6 @@ export function Dashboard() {
   return (
     <Container>
       <PanelHeader />
-      <h1>Dashboard</h1>
     </Container>
   );
 }
