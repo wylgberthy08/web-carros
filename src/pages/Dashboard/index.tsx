@@ -9,7 +9,8 @@ import {
   doc,
   deleteDoc,
 } from "firebase/firestore";
-import { db } from "../../services/firebaseConnection";
+import { db, storage } from "../../services/firebaseConnection";
+import { ref, deleteObject } from "firebase/storage";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { FiTrash2 } from "react-icons/fi";
@@ -66,11 +67,21 @@ export function Dashboard() {
     setLoadImages((prev) => [...prev, id]);
   }
 
-  async function handleDeleteCar(id: string) {
-    const docRef = doc(db, "cars", id);
+  async function handleDeleteCar(car: CarProps) {
+    const itemCar = car;
+    const docRef = doc(db, "cars", itemCar.id);
     await deleteDoc(docRef);
-    setCars(cars.filter((car) => car.id !== id));
-    console.log(id);
+    car.images.map(async (image) => {
+      const imagePath = `images/${image.uid}/${image.name}`;
+      const imageRef = ref(storage, imagePath);
+
+      try {
+        await deleteObject(imageRef);
+        setCars(cars.filter((car) => car.id !== itemCar.id));
+      } catch (error) {
+        console.log("Erro ao excluir a imagem:  ->", error);
+      }
+    });
   }
   return (
     <Container>
@@ -81,7 +92,7 @@ export function Dashboard() {
             <section className="w-full bg-white rounded-lg relative">
               <button
                 className="absolute bg-white w-14 h-14 rounded-full flex items-center justify-center right-2 top-2 drop-shadow"
-                onClick={() => handleDeleteCar(car.id)}
+                onClick={() => handleDeleteCar(car)}
               >
                 <FiTrash2 size={26} color="#000" />
               </button>
