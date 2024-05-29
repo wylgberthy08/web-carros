@@ -12,8 +12,5 @@ export function Private({ children }: PrivateProps) {
   if (loadingAuth) {
     return <div></div>;
   }
-  if (!signed) {
-    return <Navigate to="/login" />;
-  }
-  return children;
+  return !signed ? <Navigate to="/login" /> : children;
 }
