@@ -24,7 +24,7 @@ interface CarImageProps {
 export function Home() {
   const [cars, setCars] = useState<CarProps[]>([]);
   const [loadImages, setLoadImages] = useState<string[]>([]);
-  const [input, setInput] = useState();
+  const [input, setInput] = useState<string>();
 
   useEffect(() => {
     loadCars();
@@ -57,7 +57,7 @@ export function Home() {
   }
 
   async function handleSearchCar() {
-    if (input === "") {
+    if (!input) {
       loadCars();
       return;
     }
