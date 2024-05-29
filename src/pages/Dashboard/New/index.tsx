@@ -80,7 +80,6 @@ export function New() {
 
     uploadBytes(uploadRef, image).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((downloadUrl) => {
-        console.log(downloadUrl);
         const imageItem = {
           name: uidImage,
           uid: currentUuid,
@@ -94,7 +93,6 @@ export function New() {
 
   async function handleDeleteImage(item: imageItemProps) {
     const imagePath = `images/${item.uid}/${item.name}`;
-    console.log(imagePath);
 
     const imageRef = ref(storage, imagePath);
     setCarImages(carImages.filter((car) => car.url !== item.url));
@@ -121,7 +119,7 @@ export function New() {
     });
 
     addDoc(collection(db, "cars"), {
-      name: data.name,
+      name: data.name.toUpperCase(),
       model: data.model,
       whatsapp: data.whatsapp,
       city: data.city,

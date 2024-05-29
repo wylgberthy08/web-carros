@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "../../services/firebaseConnection";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 const schema = z.object({
   email: z
@@ -36,8 +37,10 @@ export function Login() {
       .then((user) => {
         console.log("logado com sucesso", user);
         navigate("/dashboard", { replace: true });
+        toast.success("Logado com sucesso");
       })
       .catch((error) => {
+        toast.error("Erro ao logar");
         console.log("Erro ao logar", error);
       });
   }
